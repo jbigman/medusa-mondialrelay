@@ -1,6 +1,6 @@
 {
 	"name": "medusa-mondialrelay",
-	"version": "1.0.4",
+	"version": "1.1.0",
 	"description": "Medusa v2 fulfillment provider for Mondial Relay shipping",
 	"author": "Théo Daguier <theo.daguier@icloud.com>",
 	"license": "MIT",
