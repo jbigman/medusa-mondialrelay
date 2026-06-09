@@ -14,6 +14,7 @@ A **Medusa v2** fulfillment provider plugin for [Mondial Relay](https://www.mond
 - 🏷️ **Label Generation** - PDF shipping label creation
 - 📦 **Shipment Tracking** - Tracking number generation
 - 🖨️ **Admin Widget** - Print labels directly from order details
+- 🔄 **Dual API Support** - Compatible SOAP v1 (previous users) et REST v2 (new users)
 
 ## Requirements
 
@@ -30,6 +31,8 @@ npm install medusa-mondialrelay
 ## Configuration
 
 ### 1. Add the plugin to medusa-config.ts
+
+Since 2024, Mondial Relay provides REST v2 credentials in the format `login@business-api.mondialrelay.com`. If you received this type of login, add `useRestApi: true` to your config to use the REST API instead of the legacy SOAP API.
 
 ```typescript
 // medusa-config.ts
@@ -48,11 +51,12 @@ export default defineConfig({
             resolve: "medusa-mondialrelay/providers/mondialrelay",
             id: "mondialrelay-fulfillment",
             options: {
+              useRestApi: true,  
               login: process.env.MONDIAL_RELAY_LOGIN,
               password: process.env.MONDIAL_RELAY_PASSWORD,
               customerId: process.env.MONDIAL_RELAY_CUSTOMER_ID,
               culture: process.env.MONDIAL_RELAY_CULTURE || "fr-FR",
-              apiBaseUrl: process.env.MONDIAL_RELAY_API_URL || "https://api.mondialrelay.com/Web_Services.asmx",
+              piBaseUrl: process.env.MONDIAL_RELAY_API_URL || "https://api.mondialrelay.com/Web_Services.asmx",
               businessAddress: {
                 title: "M",
                 firstname: process.env.BUSINESS_FIRSTNAME,

@@ -92,9 +92,10 @@ export type CollectionMode = {
 	mode: CollectionModemodeEnum;
 	location: "";
 };
-
+  
 export interface MondialRelayOptions {
-	apiBaseUrl: string;
+	useRestApi: boolean;
+	apiBaseUrl?: string;
 	login: string;
 	password: string;
 	customerId: string;
@@ -130,3 +131,4 @@ export type OutputOptions =
 			outputType: undefined;
 			outputFormat: undefined;
 	  };
+	

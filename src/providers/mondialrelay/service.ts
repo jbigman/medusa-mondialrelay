@@ -15,7 +15,9 @@ import {
 	MondialRelayOptions,
 	OutputOptions,
 } from "../../types/index.js"
-import MondialRelayClient from "./client.js"
+import MondialRelayClientSoap from "./client-soap.js"
+import { createMondialRelayClient } from "./client.js"
+import MondialRelayClientRest from "./client-rest.js"
 
 type InjectedDependencies = {
 	logger: Logger
@@ -24,7 +26,7 @@ type InjectedDependencies = {
 class MondialRelayFulfillmentService extends AbstractFulfillmentProviderService {
 	static identifier = "mondialrelay"
 
-	private client: MondialRelayClient
+	private client: MondialRelayClientSoap | MondialRelayClientRest
 	protected readonly config_: MondialRelayOptions
 	protected readonly logger_: Logger
 
@@ -35,7 +37,7 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentProviderService 
 		super()
 		this.config_ = options
 		this.logger_ = logger
-		this.client = new MondialRelayClient(options, logger)
+		this.client = createMondialRelayClient(options, logger)
 	}
 
 	async getFulfillmentOptions(): Promise<FulfillmentOption[]> {
