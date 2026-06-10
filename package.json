@@ -14,6 +14,7 @@
 	],
 	"main": ".medusa/server/providers/mondialrelay/index.js",
 	"exports": {
+		".": "./.medusa/server/providers/mondialrelay/index.js",
 		"./package.json": "./package.json",
 		"./providers/*": "./.medusa/server/providers/*/index.js",
 		"./.medusa/admin": {
