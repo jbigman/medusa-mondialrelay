@@ -34,7 +34,8 @@
 		"watch": "medusa plugin:develop",
 		"publish:local": "medusa plugin:publish",
 		"test": "jest --passWithNoTests src",
-		"prepublishOnly": "medusa plugin:build"
+		"prepublishOnly": "medusa plugin:build",
+		"prepare": "medusa plugin:build"
 	},
 	"dependencies": {
 		"@frontboi/mondial-relay": "^1.2.49",
