@@ -98,60 +98,56 @@ class MondialRelayClientRest {
 		const { context, outputOptions, shipmentsList } = data
 
 		return {
-			Context: {
-				Login: context.login,
-				Password: context.password,
-				CustomerId: context.customerId,
-				Culture: context.culture,
-				VersionAPI: context.versionAPI ?? "1.0",
+			contextField: {
+				loginField: context.login,
+				passwordField: context.password,
+				customerIdField: context.customerId,
+				cultureField: context.culture ?? "fr-FR",
+				versionAPIField: context.versionAPI ?? "1.0",
 			},
-			OutputOptions: {
-				OutputFormat: outputOptions.outputFormat ?? "A4",
-				OutputType: outputOptions.outputType ?? "PdfUrl",
+			outputOptionsField: {
+				outputFormatField: outputOptions.outputFormat ?? "A4",
+				outputTypeField: outputOptions.outputType ?? "PdfUrl",
 			},
-			ShipmentsList: {
-				Shipment: shipmentsList.map((shipment) => ({
-					OrderNo: shipment.orderNo,
-					CustomerNo: shipment.customerNo,
-					ParcelCount: shipment.parcelCount,
-					DeliveryMode: {
-						Mode: shipment.deliveryMode.mode,
-						Location: shipment.deliveryMode.location,
+			shipmentsListField: shipmentsList.map((shipment) => ({
+				orderNoField: shipment.orderNo,
+				customerNoField: shipment.customerNo ?? "",
+				parcelCountField: shipment.parcelCount,
+				deliveryModeField: {
+					modeField: shipment.deliveryMode.mode,
+					locationField: shipment.deliveryMode.location ?? "",
+				},
+				collectionModeField: {
+					modeField: shipment.collectionMode.mode,
+					locationField: shipment.collectionMode.location ?? "",
+				},
+				parcelsField: shipment.parcels.map((parcel: Parcel) => ({
+					contentField: parcel.content,
+					weightField: {
+						valueField: parcel.weight.value,
+						unitField: parcel.weight.unit,
 					},
-					CollectionMode: {
-						Mode: shipment.collectionMode.mode,
-						Location: shipment.collectionMode.location,
-					},
-					Parcels: {
-						Parcel: shipment.parcels.map((parcel: Parcel) => ({
-							Content: parcel.content,
-							Weight: {
-								Value: parcel.weight.value,
-								Unit: parcel.weight.unit,
-							},
-						})),
-					},
-					DeliveryInstruction: shipment.deliveryInstruction ?? "",
-					Sender: this.buildAddress(shipment.sender),
-					Recipient: this.buildAddress(shipment.recipient),
 				})),
-			},
+				deliveryInstructionField: shipment.deliveryInstruction ?? "",
+				senderField: this.buildAddress(shipment.sender),
+				recipientField: this.buildAddress(shipment.recipient),
+			})),
 		}
 	}
 
 	private buildAddress(address: Address): Record<string, unknown> {
 		return {
-			Title: address?.title ?? "",
-			Firstname: address?.firstname ?? "",
-			Lastname: address?.lastname ?? "",
-			Streetname: address?.streetname ?? "",
-			AddressAdd1: address?.addressAdd1 ?? "",
-			AddressAdd2: address?.addressAdd2 ?? "",
-			CountryCode: address?.countryCode?.toUpperCase() ?? "",
-			PostCode: address?.postCode ?? "",
-			City: address?.city ?? "",
-			MobileNo: address?.mobileNo ?? "",
-			Email: address?.email ?? "",
+			titleField: address?.title ?? "",
+			firstnameField: address?.firstname ?? "",
+			lastnameField: address?.lastname ?? "",
+			streetnameField: address?.streetname ?? "",
+			addressAdd1Field: address?.addressAdd1 ?? "",
+			addressAdd2Field: address?.addressAdd2 ?? "",
+			countryCodeField: address?.countryCode?.toUpperCase() ?? "",
+			postCodeField: address?.postCode ?? "",
+			cityField: address?.city ?? "",
+			mobileNoField: address?.mobileNo ?? "",
+			emailField: address?.email ?? "",
 		}
 	}
 
@@ -165,24 +161,16 @@ class MondialRelayClientRest {
 			const result = await this.sendRequest(body)
 
 			// L'API v2 REST retourne les mêmes champs que le SOAP, mais en JSON
-			const shipmentData =
-				result?.shipmentsListField?.[0] ??
-				result?.ShipmentCreationResponse?.ShipmentsList?.Shipment?.[0] ??
-				result?.ShipmentsList?.Shipment?.[0]
-
+			const shipmentData = result?.shipmentsListField?.[0]
 			if (!shipmentData) {
 				throw new Error(
 					"Mondial Relay: aucun shipment dans la réponse"
 				)
 			}
 
-			const shipmentNumber =
-				shipmentData?.ShipmentNumber ??
-				shipmentData?.$?.ShipmentNumber
+			const shipmentNumber = shipmentData?.shipmentNumberField
+			const shipmentLabel = shipmentData?.labelListField?.[0]?.outputField
 
-			const shipmentLabel =
-				shipmentData?.LabelList?.Label?.[0]?.Output ??
-				shipmentData?.LabelList?.Label?.[0]?.Output?.[0]
 
 			const rawContent =
 				shipmentData?.LabelList?.Label?.[0]?.RawContent ?? null
