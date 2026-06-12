@@ -300,7 +300,10 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentProviderService 
 			mode: CollectionModemodeEnum.REL,
 			location: "",
 		}
-
+		const rawPhone = (shippingAddress?.phone as string) ?? ""
+		const normalizedPhone = rawPhone.startsWith("+33")
+			? "0" + rawPhone.slice(3)
+			: rawPhone
 		const shipmentRequest = {
 			context: {
 				login: this.client.login,
@@ -342,8 +345,8 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentProviderService 
 						postCode: (shippingAddress?.postal_code as string) ?? "",
 						city: (shippingAddress?.city as string) ?? "",
 						addressAdd1: "",
-						mobileNo: (shippingAddress?.phone as string) ?? "",
-						email: (order?.email as string) || (shippingAddress?.email as string) || "",
+						mobileNo: normalizedPhone,
+						email: (order?.email as string) || (shippingAddress?.email as string) || "contact@annor-atelier.fr",
 					},
 				},
 			],
