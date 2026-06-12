@@ -74,21 +74,19 @@ class MondialRelayClientRest {
 	}
 
 	private handleErrors(result: any): void {
-		// L'API v2 retourne les erreurs dans StatusList
 		const statusList =
+			result?.statusListField ??
 			result?.ShipmentCreationResponse?.StatusList?.Status ??
 			result?.StatusList?.Status ??
 			[]
 
 		for (const status of statusList) {
-			const code = status?.Code ?? status?.$?.Code
-			const level = status?.Level ?? status?.$?.Level
-			const message = status?.Message ?? status?.$?.Message
+			const code = status?.codeField ?? status?.Code ?? status?.$?.Code
+			const level = status?.levelField ?? status?.Level ?? status?.$?.Level
+			const message = status?.messageField ?? status?.Message ?? status?.$?.Message
 
 			if (level === "Error") {
-				this.logger.error(
-					`[Mondial Relay] Error ${code}: ${message}`
-				)
+				this.logger.error(`[Mondial Relay] Error ${code}: ${message}`)
 				throw new Error(`Mondial Relay API Error [${code}]: ${message}`)
 			}
 
@@ -168,6 +166,7 @@ class MondialRelayClientRest {
 
 			// L'API v2 REST retourne les mêmes champs que le SOAP, mais en JSON
 			const shipmentData =
+				result?.shipmentsListField?.[0] ??
 				result?.ShipmentCreationResponse?.ShipmentsList?.Shipment?.[0] ??
 				result?.ShipmentsList?.Shipment?.[0]
 
