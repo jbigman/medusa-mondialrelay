@@ -167,15 +167,12 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentProviderService 
 
 		const deliveryType = isHomeDelivery ? "Home Delivery" : "Point Relais"
 
-		// Convert euros to cents for Medusa (Medusa expects prices in cents)
-		const priceInCents = Math.round(priceInEuros * 100)
-
 		this.logger_.info(
-			`[Mondial Relay] Final price: ${priceInEuros}€ (${priceInCents} cents) for ${totalWeight}g - ${deliveryType}`
+			`[Mondial Relay] Final price: ${priceInEuros}€ for ${totalWeight}g - ${deliveryType}`
 		)
 
 		return {
-			calculated_amount: priceInCents,
+			calculated_amount: priceInEuros,
 			is_calculated_price_tax_inclusive: true,
 		}
 	}
