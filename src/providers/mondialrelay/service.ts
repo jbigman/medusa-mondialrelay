@@ -343,7 +343,7 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentProviderService 
 						city: (shippingAddress?.city as string) ?? "",
 						addressAdd1: "",
 						mobileNo: (shippingAddress?.phone as string) ?? "",
-						email: (order?.email as string) ?? "",
+						email: (order?.email as string) || (shippingAddress?.email as string) || "",
 					},
 				},
 			],
